@@ -5,7 +5,7 @@ from parse.find import search_user
 import TESTS.validate as val
 import telegram
 
-TOKEN = " "
+TOKEN = ""
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -27,24 +27,20 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
     else:
         await update.message.reply_text(f"Enter your full name please.")
 
-
 async def photo_download(update: Update, context: CallbackContext):
-    # new_file = await update.message.effective_attachment[-1].get_file()
     new_file = await context.bot.get_file(update.message.document)
     file = await new_file.download_to_drive()
     return file
 
 async def handle_photo(update: Update, context: CallbackContext) -> None:
-    
     file = await photo_download(update, context)
     name = context.user_data.get('user_input')
-
     if name:
         await search_user(update, context, name, file)
     else:
         await update.message.reply_text(f"Enter your full name please.")
 
-async def test():
+async def show_updates():
     bot = telegram.Bot(TOKEN)
     async with bot:
         updates = (await bot.get_updates())[-1]
@@ -60,4 +56,4 @@ if __name__ == '__main__':
     
     application.run_polling()
 
-    # asyncio.run(test())
+    # asyncio.run(show_updates())
